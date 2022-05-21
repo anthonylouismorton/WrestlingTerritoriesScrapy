@@ -6,22 +6,29 @@ class WrestlerSpider(scrapy.Spider):
 
     def parse(self, response):
         for wrestler in response.css('tr.TRow1, tr.TRow2'):
-            yield{
-                'Wrestler': wrestler.css('a::text').get()
-            }
-            wrestlerURL = response.css('td.TCol.TColSeparator')
-            wrestlerLink = wrestlerURL.css('a').attrib['href']
-            yield response.follow(wrestlerLink)
-            
-        # page = response.css('div.NavigationPartPage.NavigationPartBorderRight')
-        # next_page = page.css('a').attrib['href']
+            URL = wrestler.css('td.TCol.TColSeparator a::attr(href)').get()
+            wrestlerURL = f'https://www.cagematch.net/{URL}'
+            yield response.follow(wrestlerURL, callback=self.parse2)
         pageNumber = 100
         next_page_link = f'https://www.cagematch.net/?id=2&view=workers&s={pageNumber}'
-        # for item in range(253):
-        #     pageNumber = pageNumber + 100
-        #     print(pageNumber)
-        #     yield response.follow(next_page_link, callback=self.parse)
-        while pageNumber < 25400:
+        while pageNumber < 200:
             yield response.follow(next_page_link, callback=self.parse)
             pageNumber +=100
             next_page_link = f'https://www.cagematch.net/?id=2&view=workers&s={pageNumber}'
+    def parse2(self, response):
+        for row in response.css('div.InformationBoxRow'):
+            title = row.css('div.InformationBoxTitle::text').get()
+            content = row.css('div.InformationBoxContents::text')
+
+            if content.get() is not None:
+                yield{
+                    f'{title}': content.get()
+                }
+            else:
+                yield{
+                    f'{title}': row.css('div.InformationBoxContents a::text').get()
+                }
+            # wrestlerLink = wrestlerURL.css('a').attrib['href']
+            # yield{
+            #     'Wrestler': wrestler.css('a::text').get()
+            # }
