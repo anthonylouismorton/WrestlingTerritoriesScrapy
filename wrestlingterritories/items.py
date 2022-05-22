@@ -59,3 +59,16 @@ class WrestlingterritoriesItem(scrapy.Item):
         remove_tags), output_processor=TakeFirst())
     Causeofdeath = scrapy.Field(input_processor=MapCompose(
         remove_tags), output_processor=TakeFirst())
+
+
+class WrestlingPromotionInfo(scrapy.Item):
+    CurrentName = scrapy.Field()
+    HeadQuarters = scrapy.Field()
+    ActiveTime = scrapy.Field()
+    Website = scrapy.Field()
+    Names = scrapy.Field()
+    Abbreviations = scrapy.Field()
+    Owners = scrapy.Field()
+    PopularEvents = scrapy.Field()
+    TelevisionShows = scrapy.Field()
+    Logos = scrapy.Field()

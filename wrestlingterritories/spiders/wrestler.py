@@ -13,12 +13,12 @@ class WrestlerSpider(scrapy.Spider):
             wrestlerURL = f'https://www.cagematch.net/{URL}'
             yield response.follow(wrestlerURL, callback=self.parse2)
 
-        # pageNumber = 100
-        # next_page_link = f'https://www.cagematch.net/?id=2&view=workers&s={pageNumber}'
-        # while pageNumber < 200:
-        #     yield response.follow(next_page_link, callback=self.parse)
-        #     pageNumber += 100
-        #     next_page_link = f'https://www.cagematch.net/?id=2&view=workers&s={pageNumber}'
+        pageNumber = 100
+        next_page_link = f'https://www.cagematch.net/?id=2&view=workers&s={pageNumber}'
+        while pageNumber < 25400:
+            yield response.follow(next_page_link, callback=self.parse)
+            pageNumber += 100
+            next_page_link = f'https://www.cagematch.net/?id=2&view=workers&s={pageNumber}'
 
     def parse2(self, response):
         item = WrestlingterritoriesItem()
@@ -26,7 +26,7 @@ class WrestlerSpider(scrapy.Spider):
         try:
             aka = response.css('h2.TextSubHeader::text').get().replace(
                 'Also known as ', '')
-            akalist = aka.split(',')
+            akalist = aka.split(', ')
             item['Alteregos'] = akalist
         except:
             item['Alteregos'] = None
@@ -44,6 +44,18 @@ class WrestlerSpider(scrapy.Spider):
                 item[title3] = accountList
             if title3 == 'ActiveRoles':
                 continue
+            if title3 == 'Wrestlingstyle':
+                styles = content.get().split(', ')
+                item[title3] = styles
+                continue
+            if title3 == 'Height':
+                heightSplit = content.get().split(' (')
+                item[title3] = heightSplit[1].replace(' cm)', '')
+                continue
+            if title3 == 'Weight':
+                weightSplit = content.get().split(' (')
+                item[title3] = weightSplit[1].replace(' kg)', '')
+                continue
             if title3 == 'Roles':
                 rolesList = []
                 for role in content:
@@ -53,7 +65,7 @@ class WrestlerSpider(scrapy.Spider):
             if title3 == 'Nicknames':
                 nickNameList = []
                 for nickName in content:
-                    nickNameList.append(nickName.get())
+                    nickNameList.append(nickName.get().replace('"', ''))
                 item[title3] = nickNameList
                 continue
             if title3 == 'Signaturemoves':
@@ -64,16 +76,16 @@ class WrestlerSpider(scrapy.Spider):
                 continue
             if title3 == 'Trainer':
                 if row.css('div.InformationBoxContents a::text') is not None:
+                    oneTrainer = row.css(
+                        'div.InformationBoxContents::text').get()
                     trainers = row.css(
                         'div.InformationBoxContents a::text').getall()
-                    item[title3] = trainers
-                    continue
-                elif content is not None:
-                    item[title3] = content
-                    continue
-                # elif row.css('div.InformationBoxContents') is not None:
-                #     item[title3] = row.css('div.InformationBoxContents')
-                #     continue
+                    if len(trainers) > 0:
+                        item[title3] = trainers
+                        continue
+                    elif len(trainers) == 0:
+                        item[title3] = oneTrainer
+
             if content.get() is not None:
                 if title3 == 'Alteregos':
                     pass
