@@ -9,8 +9,8 @@ from itemloaders.processors import TakeFirst, MapCompose
 from w3lib.html import remove_tags
 
 
-def remove_slash(value):
-    return value.replace("\\", "").strip()
+def remove_quotes(value):
+    return value.replace('"', '').strip()
 
 
 class WrestlingterritoriesItem(scrapy.Item):
@@ -30,7 +30,7 @@ class WrestlingterritoriesItem(scrapy.Item):
     Gender = scrapy.Field(input_processor=MapCompose(
         remove_tags), output_processor=TakeFirst())
     Height = scrapy.Field(input_processor=MapCompose(
-        remove_tags, remove_slash), output_processor=TakeFirst())
+        remove_tags), output_processor=TakeFirst())
     Weight = scrapy.Field(input_processor=MapCompose(
         remove_tags), output_processor=TakeFirst())
     Backgroundinsports = scrapy.Field(input_processor=MapCompose(
@@ -52,8 +52,10 @@ class WrestlingterritoriesItem(scrapy.Item):
     Trainer = scrapy.Field(input_processor=MapCompose(
         remove_tags), output_processor=TakeFirst())
     Nicknames = scrapy.Field(input_processor=MapCompose(
-        remove_tags), output_processor=TakeFirst())
+        remove_tags, remove_quotes), output_processor=TakeFirst())
     Signaturemoves = scrapy.Field(input_processor=MapCompose(
+        remove_tags, remove_quotes), output_processor=TakeFirst())
+    Dayofdeath = scrapy.Field(input_processor=MapCompose(
         remove_tags), output_processor=TakeFirst())
-    ActiveRoles = scrapy.Field(input_processor=MapCompose(
+    Causeofdeath = scrapy.Field(input_processor=MapCompose(
         remove_tags), output_processor=TakeFirst())
