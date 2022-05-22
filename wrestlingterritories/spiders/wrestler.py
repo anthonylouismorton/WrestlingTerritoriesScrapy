@@ -95,15 +95,3 @@ class WrestlerSpider(scrapy.Spider):
                 item[title3] = row.css(
                     'div.InformationBoxContents a::text').get()
         yield item
-        # if content.get() is not None:
-        #     yield{
-        #         f'{title}': content.get()
-        #     }
-        # else:
-        #     yield{
-        #         f'{title}': row.css('div.InformationBoxContents a::text').get()
-        #     }
-        # wrestlerLink = wrestlerURL.css('a').attrib['href']
-        # yield{
-        #     'Wrestler': wrestler.css('a::text').get()
-        # }

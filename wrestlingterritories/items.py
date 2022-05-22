@@ -62,13 +62,16 @@ class WrestlingterritoriesItem(scrapy.Item):
 
 
 class WrestlingPromotionInfo(scrapy.Item):
-    CurrentName = scrapy.Field()
+    Currentname = scrapy.Field()
     HeadQuarters = scrapy.Field()
+    SocialMedia = scrapy.Field()
     ActiveTime = scrapy.Field()
     Website = scrapy.Field()
     Names = scrapy.Field()
     Abbreviations = scrapy.Field()
     Owners = scrapy.Field()
-    PopularEvents = scrapy.Field()
-    TelevisionShows = scrapy.Field()
+    OwnerDate = scrapy.Field()
+    Popularevents = scrapy.Field()
+    Televisionshows = scrapy.Field()
     Logos = scrapy.Field()
+    LogoDates = scrapy.Field()
