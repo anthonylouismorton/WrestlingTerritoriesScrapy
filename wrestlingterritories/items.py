@@ -75,3 +75,7 @@ class WrestlingPromotionInfo(scrapy.Item):
     Televisionshows = scrapy.Field()
     Logos = scrapy.Field()
     LogoDates = scrapy.Field()
+
+
+class WrestlingMatchItem(scrapy.Item):
+    Promotion = scrapy.Field()
