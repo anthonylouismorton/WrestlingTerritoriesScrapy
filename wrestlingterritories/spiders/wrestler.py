@@ -75,16 +75,18 @@ class WrestlerSpider(scrapy.Spider):
                 item[title3] = moveList
                 continue
             if title3 == 'Trainer':
-                if row.css('div.InformationBoxContents a::text') is not None:
-                    oneTrainer = row.css(
-                        'div.InformationBoxContents::text').get()
-                    trainers = row.css(
-                        'div.InformationBoxContents a::text').getall()
-                    if len(trainers) > 0:
-                        item[title3] = trainers
-                        continue
-                    elif len(trainers) == 0:
-                        item[title3] = oneTrainer
+                trainers = row.css(
+                    'div.InformationBoxContents a::text, div.InformationBoxContents::text').getall()
+                newTrainer = []
+                for trainer in trainers:
+                    print('greeting')
+                    if trainer == ' & ' or trainer == ', ':
+                        print('we in boys')
+                        pass
+                    else:
+                        newTrainer.append(trainer)
+                item['Trainer'] = newTrainer
+                continue
 
             if content.get() is not None:
                 if title3 == 'Alteregos':

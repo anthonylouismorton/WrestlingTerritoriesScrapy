@@ -17,6 +17,7 @@ class PromotionsSpider(scrapy.Spider):
         while pageNumber < 2400:
             yield response.follow(next_page_link, callback=self.parse)
             pageNumber += 100
+
             next_page_link = f'https://www.cagematch.net/en/?id=8&view=promotions&region=Amerika&s={pageNumber}'
 
     def parse2(self, response):
@@ -47,7 +48,7 @@ class PromotionsSpider(scrapy.Spider):
                     'div.InformationBoxContents a::text, div.InformationBoxContents::text').getall()
                 newOwners = []
                 for owner in owners:
-                    if owner == '&':
+                    if owner == ' & ':
                         pass
                     newOwners.append(owner)
                 item['Owners'] = newOwners
