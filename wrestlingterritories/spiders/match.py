@@ -37,18 +37,19 @@ class MatchSpider(scrapy.Spider):
         table = response.css('table.TBase.TableBorderColor')
         rows = table.css('tr')
         rows = table.css('tr.TRow1, tr.TRow2')
+        promoID = response.css('div.TextHeaderLogo a::text').get()
         for row in rows:
             matchPage = row.css('td.TCol.TColSeparator a::attr(href)').getall()
             eventPage = 100
-            next_page_link = f'https://www.cagematch.net/en/?id=8&nr=1&page=4&s={eventPage}'
+            next_page_link = f'https://www.cagematch.net/en/{promoID}&page=4&s={eventPage}'
             # print(f'this is the match page {matchPage[1]}')
             # if matchPage[1] is None:
             #     continue
             yield response.follow(matchPage[1], callback = self.parse4)
-        while eventPage < 700:
+        while eventPage < 200:
             yield response.follow(next_page_link, callback=self.parse3)
             eventPage += 100
-            next_page_link = f'https://www.cagematch.net/en/?id=8&view=promotions&region=Amerika&s={eventPage}'
+            next_page_link = f'https://www.cagematch.net/en/?id=8&nr=1&page=4&s={eventPage}'
 
     def parse4(self, response):
         item = WrestlingEventItem()

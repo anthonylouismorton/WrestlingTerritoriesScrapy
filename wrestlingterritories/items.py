@@ -92,6 +92,7 @@ class WrestlingEventItem(scrapy.Item):
     Theme = scrapy.Field()
     Wrestlers = scrapy.Field()
     OfficialVideo = scrapy.Field()
+    Officialvideo = scrapy.Field()
     Currentname = scrapy.Field()
     Currentabbreviation = scrapy.Field()
     Status = scrapy.Field()
