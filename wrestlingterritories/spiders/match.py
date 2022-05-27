@@ -1,8 +1,8 @@
 from cgitb import text
 from imaplib import IMAP4_stream
 import scrapy
+from wrestlingterritories.items import WrestlingEventItem
 from wrestlingterritories.items import WrestlingMatchItem
-
 
 class MatchSpider(scrapy.Spider):
     name = 'match'
@@ -39,12 +39,20 @@ class MatchSpider(scrapy.Spider):
         rows = table.css('tr.TRow1, tr.TRow2')
         for row in rows:
             matchPage = row.css('td.TCol.TColSeparator a::attr(href)').getall()
+            eventPage = 100
+            next_page_link = f'https://www.cagematch.net/en/?id=8&nr=1&page=4&s={eventPage}'
+            # print(f'this is the match page {matchPage[1]}')
+            # if matchPage[1] is None:
+            #     continue
             yield response.follow(matchPage[1], callback = self.parse4)
+        while eventPage < 700:
+            yield response.follow(next_page_link, callback=self.parse3)
+            eventPage += 100
+            next_page_link = f'https://www.cagematch.net/en/?id=8&view=promotions&region=Amerika&s={eventPage}'
 
     def parse4(self, response):
-        header = response.css('h1.TextHeader::text').get()
-        print(header)
-        item = WrestlingMatchItem()
+        item = WrestlingEventItem()
+        item2 = WrestlingMatchItem()
         eventInfo = response.css('div.InformationBoxTable')
         matchInfo = response.css('div.Matches')
         for row in eventInfo.css('div.InformationBoxRow'):
@@ -55,7 +63,6 @@ class MatchSpider(scrapy.Spider):
             content = row.css('div.InformationBoxContents a::text, div.InformationBoxContents::text')
             if title3 == 'Nameoftheevent':
                 title3 = 'EventName'
-                print(title3)
                 item[title3] = content.get()
                 continue
             if title3 == 'TVstation/network':
@@ -68,9 +75,25 @@ class MatchSpider(scrapy.Spider):
                 continue
             if content.get() is not None:
                 item[title3] = content.get()
-        for match in matchInfo:
-            
-
+        allWrestlers = response.css('div.Comments.Font9 a::text, div.Comments.Font9::text').getall()
+        newAllWrestlers = []
+        for wrestler in allWrestlers:
+            if wrestler == ', ':
+                continue
+            newAllWrestlers.append(wrestler)
+        if len(newAllWrestlers) > 0:
+            item['Wrestlers'] = newAllWrestlers
         yield item
+        for match in matchInfo.css('div.Match'):
+            matchType = match.css('div.MatchType::text, div.MatchType a::text').getall()
+            if len(matchType) == 1:
+                matchTypeCombined = matchType[0]
+            else:
+                matchTypeCombined = ''.join(matchType).rstrip()
+            matchResults = match.css('div.MatchResults::text, div.MatchResults a::text ').getall()
+            item2['MatchType'] = matchTypeCombined.replace(' Match', '')
+            item2['EventName'] = response.css('div.InformationBoxContents::text').get()
+            item2['MatchResults'] = matchResults
+            # yield item2
 
 

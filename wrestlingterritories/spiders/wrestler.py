@@ -8,7 +8,6 @@ class WrestlerSpider(scrapy.Spider):
 
     def parse(self, response):
         for wrestler in response.css('tr.TRow1, tr.TRow2'):
-
             URL = wrestler.css('td.TCol.TColSeparator a::attr(href)').get()
             wrestlerURL = f'https://www.cagematch.net/{URL}'
             yield response.follow(wrestlerURL, callback=self.parse2)

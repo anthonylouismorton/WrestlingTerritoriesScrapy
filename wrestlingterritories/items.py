@@ -77,7 +77,7 @@ class WrestlingPromotionInfo(scrapy.Item):
     LogoDates = scrapy.Field()
 
 
-class WrestlingMatchItem(scrapy.Item):
+class WrestlingEventItem(scrapy.Item):
     Promotion = scrapy.Field()
     EventName = scrapy.Field()
     Date = scrapy.Field()
@@ -90,3 +90,18 @@ class WrestlingMatchItem(scrapy.Item):
     Commentators = scrapy.Field()
     Attendance = scrapy.Field()
     Theme = scrapy.Field()
+    Wrestlers = scrapy.Field()
+    OfficialVideo = scrapy.Field()
+    Currentname = scrapy.Field()
+    Currentabbreviation = scrapy.Field()
+    Status = scrapy.Field()
+    ActiveTime = scrapy.Field()
+    WWW = scrapy.Field()
+    Names = scrapy.Field()
+    Abbreviations = scrapy.Field()
+    Owners = scrapy.Field()
+
+class WrestlingMatchItem(scrapy.Item):
+    EventName = scrapy.Field()
+    MatchType = scrapy.Field()
+    MatchResults = scrapy.Field()
