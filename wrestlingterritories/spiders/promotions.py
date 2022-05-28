@@ -11,6 +11,7 @@ class PromotionsSpider(scrapy.Spider):
     def parse(self, response):
         for promotion in response.css('tr.TRow1, tr.TRow2'):
             URL = promotion.css('td.TCol.TColSeparator a::attr(href)').get()
+            # print(URL)
             yield response.follow(URL, callback=self.parse2)
         pageNumber = 0
         next_page_link = f'https://www.cagematch.net/en/?id=8&view=promotions&region=Amerika&s={pageNumber}'
@@ -23,11 +24,14 @@ class PromotionsSpider(scrapy.Spider):
     def parse2(self, response):
         item = WrestlingPromotionInfo()
         for row in response.css('div.InformationBoxRow'):
-            title = row.css(
-                'div.InformationBoxTitle::text').get().replace(':', '')
-            title2 = title.replace(' ', '')
-            title3 = title2.replace('-', '')
-            content = row.css('div.InformationBoxContents::text')
+            try:
+                title = row.css(
+                    'div.InformationBoxTitle::text').get().replace(':','')
+                title2 = title.replace(' ', '')
+                title3 = title2.replace('-', '')
+                content = row.css('div.InformationBoxContents::text')
+            except:
+                continue
             if title3 == 'Currentname':
                 item[title3] = content.get()
                 continue
@@ -56,7 +60,8 @@ class PromotionsSpider(scrapy.Spider):
             if title3 == 'Names':
                 names = row.css(
                     'div.InformationBoxContents::text').getall()
-                print(f'these are the names{names}')
+                item['Names'] = names
+                continue
             if title3 == 'Televisionshows':
                 shows = row.css(
                     'div.InformationBoxContents a::text').getall()

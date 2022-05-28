@@ -101,8 +101,10 @@ class WrestlingEventItem(scrapy.Item):
     Names = scrapy.Field()
     Abbreviations = scrapy.Field()
     Owners = scrapy.Field()
+    PopularEvents = scrapy.Field()
 
 class WrestlingMatchItem(scrapy.Item):
     EventName = scrapy.Field()
     MatchType = scrapy.Field()
     MatchResults = scrapy.Field()
+    EventDate = scrapy.Field()
